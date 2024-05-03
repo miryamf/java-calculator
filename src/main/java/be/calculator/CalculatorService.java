@@ -1,5 +1,6 @@
 package be.calculator;
 
+import dataStructures.Operator;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -10,18 +11,18 @@ import static be.calculator.Constants.*;
 @Service
 public class CalculatorService {
 
-    private static final Map<String, BiFunction<Integer, Integer, Integer>> OPERATIONS = Map.of(
-            PLUS, Integer::sum,
-            MINUS, (a, b) -> a - b,
-            MULTIPLY, (a, b) -> a * b,
-            DIVIDE, CalculatorService::divide
+    private static final Map<Operator, BiFunction<Integer, Integer, Integer>> OPERATIONS = Map.of(
+            Operator.PLUS, Integer::sum,
+            Operator.MINUS, (a, b) -> a - b,
+            Operator.MULTIPLY, (a, b) -> a * b,
+            Operator.DIVIDE, CalculatorService::divide
     );
 
-    private static final Map<String, String> SYMBOLS = Map.of(
-            PLUS, PLUS_SYMBOL,
-            MINUS, MINUS_SYMBOL,
-            MULTIPLY, MULTIPLY_SYMBOL,
-            DIVIDE, DIVIDE_SYMBOL
+    private static final Map<Operator, String> SYMBOLS = Map.of(
+            Operator.PLUS, PLUS_SYMBOL,
+            Operator.MINUS, MINUS_SYMBOL,
+            Operator.MULTIPLY, MULTIPLY_SYMBOL,
+            Operator.DIVIDE, DIVIDE_SYMBOL
     );
 
     private static int divide(int a, int b) {
@@ -31,11 +32,11 @@ public class CalculatorService {
         return a / b;
     }
 
-    public int calculate(String operator, int left, int right) {
+    public int calculate(Operator operator, int left, int right) {
         return OPERATIONS.get(operator).apply(left, right);
     }
 
-    public String getSymbol(String operator) {
+    public String getSymbol(Operator operator) {
         return SYMBOLS.get(operator);
     }
 }

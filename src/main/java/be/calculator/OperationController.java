@@ -36,8 +36,10 @@ public class OperationController {
         try{
             String stringResponse = createStringResponse(operation);
             return ResponseEntity.ok(stringResponse);
-        } catch (ArithmeticException e) {
+        } catch (ArithmeticException | IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("An error occurred while processing the request");
         }
 
 
@@ -51,6 +53,9 @@ public class OperationController {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleInvalidRequestBody(HttpMessageNotReadableException ex) {
-        return ResponseEntity.badRequest().body("Invalid request body. Please provide a JSON object with 'operator'(String), 'left'(integer), and 'right'(integer) fields.");
+        if (ex.getRootCause() instanceof IllegalArgumentException) {
+            return ResponseEntity.badRequest().body( ex.getRootCause().getMessage());
+        }
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 }
